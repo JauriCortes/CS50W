@@ -1,5 +1,5 @@
 let counter = 0;
-function count() {
+let count =() => {
     counter++
     document.querySelector('h1').innerHTML = counter;
 
