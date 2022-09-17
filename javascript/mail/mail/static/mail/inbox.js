@@ -34,7 +34,7 @@ function load_mailbox(mailbox) {
   document.querySelector('#compose-view').style.display = 'none';
   
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  document.querySelector('#emails-view').innerHTML = `<h3 id="mailbox_h">${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
   load(mailbox);
 }
 
@@ -76,9 +76,16 @@ function ViewEmail (id){
       let body = document.createElement("p");
       body.innerHTML = result.body;
       div.appendChild(body);
+      
+      let mailbox = document.querySelector('#mailbox_h').innerHTML;
+      if (mailbox != 'Sent') {
+        let archived = document.createElement("button");
+        archived.onclick = () => archive_mail(id, result.archived)
+        archived.innerHTML = result.archived?'unarchive': 'archive';
+        div.appendChild(archived);
+      }
 
       document.querySelector('#ViewEmail-view').appendChild(div);
-      //console.log(div)
     }
   )
   .catch(error => console.log('error', error))
@@ -94,6 +101,22 @@ function ViewEmail (id){
   .then(response => console.log(response))
   
 }
+
+
+function archive_mail(id, boolean) {
+  var requestOptions = {
+    method: 'PUT',
+    body: JSON.stringify({
+      archived: !boolean
+  })
+  };
+
+  fetch(`/emails/${id}`, requestOptions)
+  .then(response => console.log(response),
+    load_mailbox('inbox'))
+  
+}
+
 
 function load(mailbox) {
 
@@ -127,8 +150,9 @@ function load(mailbox) {
       p.innerHTML = timestamp;
       div.appendChild(p);
 
+      let input = document.createElement("input");
+
       document.querySelector('#emails-view').appendChild(div);
-      //console.log(div)
     }
   })
   .catch(error => console.log('error', error))
