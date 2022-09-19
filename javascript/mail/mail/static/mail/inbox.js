@@ -22,8 +22,6 @@ function compose_email() {
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
   
-  // Adds event listener to submit button
-  //document.querySelector('#compose-form').addEventListener('submit', send)
 }
 
 function load_mailbox(mailbox) {
@@ -83,6 +81,13 @@ function ViewEmail (id){
         archived.onclick = () => archive_mail(id, result.archived)
         archived.innerHTML = result.archived?'unarchive': 'archive';
         div.appendChild(archived);
+
+        let reply = document.createElement("button");
+        reply.onclick = () => reply_mail(result.sender, result.subject, result.body, result.timestamp)
+        reply.innerHTML = 'Reply';
+        div.appendChild(reply);
+
+
       }
 
       document.querySelector('#ViewEmail-view').appendChild(div);
@@ -102,6 +107,21 @@ function ViewEmail (id){
   
 }
 
+function reply_mail(sender, subject, body, timestamp) {
+  // Show compose view and hide other views
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#ViewEmail-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'block';
+
+  // Clear out composition fields
+  document.querySelector('#compose-recipients').value = '';
+  document.querySelector('#compose-subject').value = '';
+  document.querySelector('#compose-body').value = '';
+
+  document.querySelector('#compose-recipients').value = sender;
+  document.querySelector('#compose-subject').value = `Re: ${subject}`;
+  document.querySelector('#compose-body').value = `On ${timestamp} ${sender} wrote: \n ${body}`;
+}
 
 function archive_mail(id, boolean) {
   var requestOptions = {
