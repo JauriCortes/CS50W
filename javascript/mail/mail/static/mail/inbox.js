@@ -118,8 +118,13 @@ function reply_mail(sender, subject, body, timestamp) {
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
 
+
   document.querySelector('#compose-recipients').value = sender;
-  document.querySelector('#compose-subject').value = `Re: ${subject}`;
+  if(subject.substring(0,4) != "Re: ") {
+    document.querySelector('#compose-subject').value = `Re: `;
+  }
+ 
+  document.querySelector('#compose-subject').value = `${document.querySelector('#compose-subject').value}${subject}`;
   document.querySelector('#compose-body').value = `On ${timestamp} ${sender} wrote: \n ${body}`;
 }
 
