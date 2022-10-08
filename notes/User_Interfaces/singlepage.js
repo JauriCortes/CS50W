@@ -1,23 +1,22 @@
 // Show one page and hides the other two
-function showPage(page) {
+function showSection(section) {
 
-    //Hide all of the divs
-    document.querySelectorAll('div').forEach(div => {
-        div.style.display = 'none';
-    });
-
-    // Show the div provided in the argument
-    document.querySelector(`#${page}`).style.display = 'block';
+    fetch(`/sections/${section}`)
+    .then(response => response.text())
+    .then(text => {
+        console.log(text);
+        document.querySelector('#content').innerHTML = text;
+    })
 }
 
 //Wait for page to loaded
 document.addEventListener('DOMContentLoaded', function() {
 
     // Select all buttons
-    document.querySelectorAll('button').forEach(button => {
+    document.querySelectorAll("button").forEach(button => {
 
         //When a button is clicked, switch to that page
-        botton.onclick = function() {
+        button.onclick = function() {
             showPage(this.dataset.page);
         }
     })
