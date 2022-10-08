@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single Page</title>
+    <script>
+        window.onpopstate = function(event) {
+            console.log(event.state.section);
+            showSection(event.state.section);
+        }
+
+        // Show one page and hides the other two
+        function showSection(section) {
+
+        fetch(`/sections/${section}`)
+        .then(response => response.text())
+        .then(text => {
+            console.log(text);
+            document.querySelector('#content').innerHTML = text;
+        })
+        }
+
+        //Wait for page to loaded
+        document.addEventListener('DOMContentLoaded', function() {
+
+        // Select all buttons
+        document.querySelectorAll("button").forEach(button => {
+
+            //When a button is clicked, switch to that page
+            button.onclick = function() {
+                const section = this.dataset.section;
+
+                //Add the current state to the history
+                history.pushState({section: section}, "", `section${section}`);
+                showSection(section);
+            }
+        })
+
+        })
+    </script>
+</head>
+<body>
+    <button data-section="1">Page 1</button>
+    <button data-section="2">Page 2</button>
+    <button data-section="3">Page 3</button>
+
+    <div id="content">hola</div>
+</body>
+</html>

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         //When a button is clicked, switch to that page
         button.onclick = function() {
-            showPage(this.dataset.page);
+            showSection(this.dataset.page);
         }
     })
 
