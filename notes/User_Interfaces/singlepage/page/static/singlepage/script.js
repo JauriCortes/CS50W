@@ -33,9 +33,24 @@ function load() {
         //create new post
         const post = document.createElement('div');
         post.className = 'post';
-        post.innerHTML = contents;
+        post.innerHTML = `${contents} <button class="hide">Hide</button>`
 
         // Add post to DOM
         document.querySelector('#posts').append(post);
     }
 }
+
+//if button is clicked delete the post
+document.addEventListener('click', event => {
+
+    //Find what was clicked on 
+    const element = event.target;
+
+    //check if the user clicked on a hide button
+    if (element.className === 'hide') {
+        element.parentElement.style.animationPlayState = 'running';
+        element.parentElement.addEventListener('animationend', () => {
+            element.parentElement.remove()
+        } )
+    }
+})
