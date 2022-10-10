@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animate</title>
+    <style>
+        @keyframes grow {
+            from {
+                font-size: 20px;
+            } 
+            to {
+                font-size: 100px;
+            }
+        }
+
+        @keyframes move {
+            0% {
+                left: 0%;
+            }
+            50% {
+                left: 50%;
+            }
+            100% {
+                left: 0%;
+            }
+            
+        }
+
+        h1 {
+            animation-name: grow;
+            animation-duration: 2s;
+            animation-fill-mode:forwards;
+        }
+
+        h2 {
+            position: relative;
+            animation-name: move;
+            animation-duration: 2s;
+            animation-fill-mode: forwards;
+            animation-iteration-count:infinite;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            //finding heading
+            const h2 = document.querySelector('h2');
+
+            //paused animation as default
+            h2.style.animationPlayState = 'paused';
+
+            //wait for the button to be clicked
+            document.querySelector('button').onclick = () => {
+                //if animation is paused begin to play it
+                if (h2.style.animationPlayState == 'paused') {
+                    h2.style.animationPlayState = 'running';
+                }
+
+                //otherwise paused
+                else {
+                    h2.style.animationPlayState = 'paused';
+                }
+            }
+        })
+    </script>
+
+</head>
+<body>
+    <h2>good bye</h2>
+    <button>touch me</button>
+</body>
+</html>
