@@ -15,4 +15,7 @@ jobs:
     - name: django tests
       run: |
         pip3 install --user django
+        cd notes
+        cd SQL
+        cd airline
         python3 manage.py test
