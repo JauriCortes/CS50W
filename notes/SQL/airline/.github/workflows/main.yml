@@ -9,5 +9,4 @@ jobs:
     - name: Run Django unit tests
       run: |
         pip3 install --user django
-        apt-get install python3
         pyton3 manage.py test
