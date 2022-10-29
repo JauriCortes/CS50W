@@ -12,4 +12,4 @@ jobs:
         cd notes
         cd SQL
         cd airline
-        pyton3 manage.py test
+        pyton manage.py test
