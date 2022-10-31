@@ -1,4 +1,7 @@
+from urllib import response
 from django.test import TestCase, Client
+from django.urls import reverse
+
 from .models import User
 
 # Create your tests here.
@@ -23,8 +26,36 @@ class NetworkTestCAse(TestCase):
     def test_register(self):
 
         c = Client()
-        response = c.post(f"//register/", {'username': {self.name2}, 'password': {self.password}, 'confirmation': {self.password}})
-        print(get_user(self.client).is_authenticated())
+        response = c.post(reverse('register'), {
+            'username': {self.name2},
+            'email': {self.mail2},
+            'password': {self.password}, 
+            'confirmation': {self.password}})
+        
+        self.assertEqual(response.status_code, 302)
+
+    def test_register_wrongPassword(self):
+
+        c = Client()
+        response = c.post(reverse('register'), {
+            'username': {self.name2},
+            'email': {self.mail2},
+            'password': {self.password}, 
+            'confirmation': {self.wrongPassword}})
+        
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['message'], "Passwords must match.")
+    
+    def test_register_takenUsername(self):
+
+        c = Client()
+        response = c.post(reverse('register'), {
+            'username': {self.TakenName},
+            'email': {self.mail2},
+            'password': {self.password}, 
+            'confirmation': {self.password}})
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['message'], "Username already taken.")
 
 # there should be a new post box on all post page

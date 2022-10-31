@@ -4,13 +4,16 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from django.contrib import messages
+from django.views.decorators.csrf import  csrf_exempt
+
 from .models import User
 
 
 def index(request):
     return render(request, "network/index.html")
 
-
+@csrf_exempt
 def login_view(request):
     if request.method == "POST":
 
@@ -35,7 +38,7 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
-
+@csrf_exempt
 def register(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -60,4 +63,6 @@ def register(request):
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
-        return render(request, "network/register.html")
+        return render(request, "network/register.html",{
+            "message": "Welcome"
+        })
