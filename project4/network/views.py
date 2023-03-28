@@ -13,7 +13,13 @@ from .models import Posts, User
 
 
 def index(request):
-    return render(request, "network/index.html")
+    if request.user.is_authenticated:
+        return render(request, "network/index.html", {
+            "posts": Posts.objects.all()
+        })
+    
+    else:
+        return render(request, "network/index.html")
 
 @csrf_exempt
 def login_view(request):
