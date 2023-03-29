@@ -1,0 +1,35 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<div>
+    <h1>{{ profile.username }}</h1>
+    {% if user.is_authenticated %}
+        {% if user.username == profile.username %}    
+        {% else %}
+
+        <form action="{% url 'follow' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" value="{{profile}}" name="profile"/>
+            <input type="hidden" value="{{ b_name }}" name="b_name"/>
+            <br/>
+            <input type="submit" value="{{ b_name }}" class="btn btn-primary my-3"/>
+        </form>
+
+        {% endif %}
+    {% endif %}
+</div>
+<div class=" border p-3 my-3">
+    <p>Followers: {{ followers }} Following: {{ following }}</p>
+</div>
+
+<div>
+    {% for post in posts %}
+        <div class="border p-3 m-3">
+            <b>{{ post.poster.username }}</b>
+            <p>{{ post.content }}</p>
+            <p> ♥{{ post.likes }}</p>
+            <p>{{ post.timestamp }}</p>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}

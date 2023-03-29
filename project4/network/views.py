@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.views.decorators.csrf import  csrf_exempt
 from django.contrib.auth.decorators import login_required
 
-from .models import Posts, User
+from .models import Follows, Posts, User
 
 
 def index(request):
@@ -92,3 +92,33 @@ def new_post(request):
     post.save()
 
     return HttpResponseRedirect(reverse("index"))
+
+def profile(request, profile):
+
+    profile_obj = User.objects.get(username=profile)
+    followers = profile_obj.followers.all().count()
+    following = profile_obj.following.all().count()
+
+    b_name = "Follow"
+    if request.user in profile_obj.followers.all():
+        b_name = "Unfollow"
+
+    posts = Posts.objects.filter(poster=profile_obj.id).reverse()
+    
+    return render(request, "network/profile.html", {
+        "profile": profile_obj,
+        "followers": followers,
+        "following": following,
+        "posts": posts,
+        "b_name": b_name
+    })
+
+login_required
+def follow_action(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+    
+    if request.POST.get("b_name") == "Follow":
+
+        profile_n = request.POST.get(profile)
+        print(f"followed {profile_n}")
