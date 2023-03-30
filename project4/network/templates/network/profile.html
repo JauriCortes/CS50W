@@ -7,11 +7,8 @@
         {% if user.username == profile.username %}    
         {% else %}
 
-        <form action="{% url 'follow' %}" method="post">
+        <form action=" {{ profile.id }}/{{ b_name }}" method="post">
             {% csrf_token %}
-            <input type="hidden" value="{{profile}}" name="profile"/>
-            <input type="hidden" value="{{ b_name }}" name="b_name"/>
-            <br/>
             <input type="submit" value="{{ b_name }}" class="btn btn-primary my-3"/>
         </form>
 

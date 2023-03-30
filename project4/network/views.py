@@ -2,7 +2,7 @@ import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from django.contrib import messages
@@ -15,6 +15,7 @@ from .models import Follows, Posts, User
 def index(request):
     if request.user.is_authenticated:
         return render(request, "network/index.html", {
+            
             "posts": Posts.objects.all()
         })
     
@@ -93,15 +94,16 @@ def new_post(request):
 
     return HttpResponseRedirect(reverse("index"))
 
-def profile(request, profile):
+def profile(request, profile_id):
 
-    profile_obj = User.objects.get(username=profile)
+    profile_obj = User.objects.get(pk=profile_id)
     followers = profile_obj.followers.all().count()
     following = profile_obj.following.all().count()
 
-    b_name = "Follow"
-    if request.user in profile_obj.followers.all():
-        b_name = "Unfollow"
+    b_name = "follow"
+    for follower in profile_obj.followers.all():
+        if request.user == follower.follower:
+            b_name = "unfollow"
 
     posts = Posts.objects.filter(poster=profile_obj.id).reverse()
     
@@ -113,12 +115,24 @@ def profile(request, profile):
         "b_name": b_name
     })
 
-login_required
-def follow_action(request):
+@login_required
+def follow(request, followed_id):
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
     
-    if request.POST.get("b_name") == "Follow":
+    followed = User.objects.get(id=followed_id)
+    follow_obj = Follows(followed=followed, follower=request.user)
 
-        profile_n = request.POST.get(profile)
-        print(f"followed {profile_n}")
+    follow_obj.save()
+
+    return redirect(f"/user/{followed_id}")
+
+@login_required
+def unfollow(request, unfollowed_id):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+    
+    unfollowed = User.objects.get(id=unfollowed_id)
+
+    Follows.objects.get(followed=unfollowed, follower=request.user).delete()
+    return redirect(f"/user/{unfollowed_id}")

@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://jauricortes-didactic-train-x44xggv46jg366gv-8000.preview.app.github.dev",
+]
 
 # Application definition
 
