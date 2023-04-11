@@ -136,3 +136,17 @@ def unfollow(request, unfollowed_id):
 
     Follows.objects.get(followed=unfollowed, follower=request.user).delete()
     return redirect(f"/user/{unfollowed_id}")
+
+@login_required
+def following_page(request):
+    if request.method != "GET":
+        return JsonResponse({"error": "GET request required."}, status=400)
+    
+    following_users = request.user.following.all()
+    following_id = [following.followed_id for following in following_users]
+    posts = Posts.objects.filter(poster_id__in = following_id )
+
+    return render(request, "network/index.html", {
+        
+        "posts": posts
+    })
