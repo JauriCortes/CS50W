@@ -9,14 +9,22 @@ from django.contrib import messages
 from django.views.decorators.csrf import  csrf_exempt
 from django.contrib.auth.decorators import login_required
 
+from django.core.paginator import Paginator
+
 from .models import Follows, Posts, User
 
 
 def index(request):
     if request.user.is_authenticated:
+        post_list = Posts.objects.all().order_by('-id')
+        paginator = Paginator(post_list, 10)
+
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
         return render(request, "network/index.html", {
             
-            "posts": Posts.objects.all()
+            "page_obj": page_obj
         })
     
     else:
@@ -105,13 +113,19 @@ def profile(request, profile_id):
         if request.user == follower.follower:
             b_name = "unfollow"
 
-    posts = Posts.objects.filter(poster=profile_obj.id).reverse()
+    post_list = Posts.objects.filter(poster=profile_obj.id).order_by('-id')
+    paginator = Paginator(post_list, 10)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+
     
     return render(request, "network/profile.html", {
         "profile": profile_obj,
         "followers": followers,
         "following": following,
-        "posts": posts,
+        "page_obj": page_obj,
         "b_name": b_name
     })
 
@@ -144,9 +158,14 @@ def following_page(request):
     
     following_users = request.user.following.all()
     following_id = [following.followed_id for following in following_users]
-    posts = Posts.objects.filter(poster_id__in = following_id )
+
+    post_list = Posts.objects.filter(poster_id__in = following_id ).order_by('-id')
+    paginator = Paginator(post_list, 10)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     return render(request, "network/index.html", {
         
-        "posts": posts
+        "page_obj": page_obj
     })
