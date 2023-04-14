@@ -1,0 +1,42 @@
+
+
+{% for post in page_obj %}
+<div class="border p-3 m-3" id="post_{{ post.id }}">
+    <b>{{ post.poster.username }}</b>
+    <p id="content_{{ post.id }}">{{ post.content }}</p>
+    <p> ♥{{ post.likes }}</p>
+    <p>{{ post.timestamp }}</p>
+    {% if user.username == post.poster.username %}   
+    <button class="btn btn-primary my-3 edit" >edit</button>
+    {% endif %}
+</div>
+
+{% if user.username == post.poster.username %}   
+<div class="border p-3 m-3 editarea" id="editarea_{{ post.id }}">
+    <b>{{ post.poster.username }}</b>
+    <br>
+    <textarea id="textarea_{{ post.id }}">{{ post.content }}</textarea>
+    <p> ♥{{ post.likes }}</p>
+    <p>{{ post.timestamp }}</p>
+    <button class="btn btn-primary my-3 submit" >submit</button>
+</div>
+{% endif %}
+
+{% endfor %}
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">first</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a></li>
+        {% endif %}
+    
+        <li class="page-item"><a class="page-link" href="#">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</a></li>
+
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last</a></li>
+        {% endif %}
+      
+    </ul>
+  </nav>
