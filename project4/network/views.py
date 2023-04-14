@@ -13,6 +13,7 @@ from django.core.paginator import Paginator
 
 from .models import Follows, Posts, User
 
+import pdb
 
 def index(request):
     if request.user.is_authenticated:
@@ -169,3 +170,22 @@ def following_page(request):
         
         "page_obj": page_obj
     })
+
+@csrf_exempt
+@login_required
+def edit(request, id):
+
+    if request.method != "PUT":
+        return JsonResponse({"error": "PUT request required."}, status=400)
+
+    post = Posts.objects.get(id=id)
+
+    if request.user.id != post.poster_id:
+        return JsonResponse({"error": "Only poster can change owned posts."}, status=400)
+    
+    data = json.loads(request.body)
+    if data.get("content") is not None:
+        post.content = data["content"]
+    
+    post.save()
+    return HttpResponse(status=204)

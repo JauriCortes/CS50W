@@ -44,6 +44,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
             content = document.getElementById(`content_${id}`)
             content.innerHTML = textarea.value
+
+            var requestOptions = {
+                method: 'PUT',
+                body: JSON.stringify({
+                    content: textarea.value
+                })
+            };
+
+            fetch(`/edit/${id}`, requestOptions)
+            .then(response => console.log(response))
             
             post = document.getElementById(`post_${id}`)
             post.style.display = 'block';
