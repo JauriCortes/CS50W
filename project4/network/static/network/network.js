@@ -59,4 +59,25 @@ document.addEventListener('DOMContentLoaded', function() {
             post.style.display = 'block';
         })
     })
+
+    document.querySelectorAll(".like").forEach((button) => {
+        button.addEventListener('click', (e) => {
+            
+            const parent = e.target.parentNode;
+            id = parent.id.replace("post_", "")
+    
+            var requestOptions = {
+                method: 'POST',
+            };
+
+            fetch(`/like/${id}`, requestOptions)
+            .then(response => console.log(response))
+            
+            like_ele = document.getElementById(`like_${id}`)
+            likes = parseInt(like_ele.innerHTML.replace("♥", "")) + 1
+
+            like_ele.innerHTML = `♥${likes}`
+        
+        })
+    })
 })

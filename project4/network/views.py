@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.core.paginator import Paginator
 
-from .models import Follows, Posts, User
+from .models import Follows, Likes, Posts, User
 
 import pdb
 
@@ -188,4 +188,16 @@ def edit(request, id):
         post.content = data["content"]
     
     post.save()
+    return HttpResponse(status=204)
+
+@csrf_exempt
+@login_required
+def like(request, id):
+
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    like_obj = Likes(post_id = id, user_id = request.user.id)
+    
+    like_obj.save()
     return HttpResponse(status=204)
