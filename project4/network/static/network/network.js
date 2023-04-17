@@ -60,23 +60,59 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
+    liked_posts = []
+    var requestOptions = { method: 'GET'};
+
+    fetch('/posts', requestOptions)
+    .then(response => response.json())
+    .then(data => {
+        const myObjects = JSON.parse(data.serialized);
+
+        for (const object of myObjects) {
+            id = ((object.fields.post).toString())
+            like_ele = document.getElementById(`like_${id}`)
+
+            likes = parseInt(like_ele.innerHTML.replace("♥", ""))
+    
+            like_ele.innerHTML = `♡${likes}`
+            liked_posts.push(id)
+        }
+    });
+
     document.querySelectorAll(".like").forEach((button) => {
         button.addEventListener('click', (e) => {
             
             const parent = e.target.parentNode;
             id = parent.id.replace("post_", "")
-    
+            
             var requestOptions = {
                 method: 'POST',
             };
 
             fetch(`/like/${id}`, requestOptions)
             .then(response => console.log(response))
-            
-            like_ele = document.getElementById(`like_${id}`)
-            likes = parseInt(like_ele.innerHTML.replace("♥", "")) + 1
 
-            like_ele.innerHTML = `♥${likes}`
+            like_ele = document.getElementById(`like_${id}`)
+
+            if (liked_posts.includes(id)) {
+
+
+                likes = parseInt(like_ele.innerHTML.replace("♡", "")) - 1
+    
+                like_ele.innerHTML = `♥${likes}`
+
+                index = liked_posts.indexOf(id)
+                liked_posts.splice(index, 1)
+            }
+
+            else {
+
+                likes = parseInt(like_ele.innerHTML.replace("♥", "")) + 1
+    
+                like_ele.innerHTML = `♡${likes}`
+                liked_posts.push(id)
+            }
+            
         
         })
     })

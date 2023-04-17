@@ -5,6 +5,8 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
+from django.core import serializers
+from django.http import JsonResponse
 from django.contrib import messages
 from django.views.decorators.csrf import  csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -24,7 +26,6 @@ def index(request):
         page_obj = paginator.get_page(page_number)
 
         return render(request, "network/index.html", {
-            
             "page_obj": page_obj
         })
     
@@ -196,8 +197,22 @@ def like(request, id):
 
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
-
-    like_obj = Likes(post_id = id, user_id = request.user.id)
     
-    like_obj.save()
+    try:
+        like = Likes.objects.get(post_id = id, user_id = request.user.id)
+        like.delete()
+    except:
+        like_obj = Likes(post_id = id, user_id = request.user.id)
+        like_obj.save()
+
     return HttpResponse(status=204)
+
+def liked_posts(request):
+
+    if request.method != 'GET':
+        return JsonResponse({"error": "GET request required."}, status=400)
+    
+    likes = request.user.likes.all()
+    serialized_likes = serializers.serialize('json', likes)
+    return JsonResponse({'serialized': serialized_likes}, safe=False)
+
